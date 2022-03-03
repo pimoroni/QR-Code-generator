@@ -5,6 +5,8 @@ typedef struct _qrcode_obj_t {
     mp_obj_base_t base;
 	uint8_t *qr0;
 	uint8_t *tempBuffer;
+    enum qrcodegen_Ecc ecc;
+    enum qrcodegen_Mask mask;
 } qrcode_obj_t;
 
 mp_obj_t qrcode___del__(mp_obj_t self_in) {
@@ -16,9 +18,19 @@ mp_obj_t qrcode___del__(mp_obj_t self_in) {
 mp_obj_t qrcode_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args) {
     qrcode_obj_t *self = m_new_obj_with_finaliser(qrcode_obj_t);
 
+    enum { ARG_ecc, ARG_mask };
+    static const mp_arg_t allowed_args[] = {
+        { MP_QSTR_ecc, MP_ARG_INT, {.u_int = qrcodegen_Ecc_MEDIUM} },
+        { MP_QSTR_mask, MP_ARG_INT, {.u_int = qrcodegen_Mask_AUTO} },
+    };
+    mp_arg_val_t args[MP_ARRAY_SIZE(allowed_args)];
+    mp_arg_parse_all_kw_array(n_args, n_kw, all_args, MP_ARRAY_SIZE(allowed_args), allowed_args, args);
+
     self->base.type = &qrcode_type;
     self->qr0 = m_new(uint8_t, qrcodegen_BUFFER_LEN_MAX);
 	self->tempBuffer = m_new(uint8_t, qrcodegen_BUFFER_LEN_MAX);
+    self->ecc = args[ARG_ecc].u_int;
+    self->mask = args[ARG_mask].u_int;
 
     return MP_OBJ_FROM_PTR(self);
 }
@@ -32,9 +44,9 @@ mp_obj_t qrcode_set_text(mp_obj_t self_in, mp_obj_t text) {
 		GET_STR_DATA_LEN(text, str, str_len);
 
 		bool ok = qrcodegen_encodeText((const char*)str,
-			self->tempBuffer, self->qr0, qrcodegen_Ecc_MEDIUM,
+			self->tempBuffer, self->qr0, self->ecc,
 			qrcodegen_VERSION_MIN, qrcodegen_VERSION_MAX,
-			qrcodegen_Mask_AUTO, true);
+			self->mask, true);
 
 		return ok ? mp_const_true : mp_const_false;
     }
@@ -95,6 +107,27 @@ const mp_obj_type_t qrcode_type = {
 STATIC const mp_map_elem_t qrcode_globals_table[] = {
 	{ MP_OBJ_NEW_QSTR(MP_QSTR___name__), MP_OBJ_NEW_QSTR(MP_QSTR_qrcode) },
     { MP_OBJ_NEW_QSTR(MP_QSTR_QRCode), (mp_obj_t)&qrcode_type },
+
+    { MP_ROM_QSTR(MP_QSTR_ECC_LOW), MP_ROM_INT(qrcodegen_Ecc_LOW) },
+    { MP_ROM_QSTR(MP_QSTR_ECC_MEDIUM), MP_ROM_INT(qrcodegen_Ecc_MEDIUM) },
+    { MP_ROM_QSTR(MP_QSTR_ECC_QUARTILE), MP_ROM_INT(qrcodegen_Ecc_QUARTILE) },
+    { MP_ROM_QSTR(MP_QSTR_ECC_HIGH), MP_ROM_INT(qrcodegen_Ecc_HIGH) },
+
+    { MP_ROM_QSTR(MP_QSTR_MASK_AUTO), MP_ROM_INT(qrcodegen_Mask_AUTO) },
+    { MP_ROM_QSTR(MP_QSTR_MASK_0), MP_ROM_INT(qrcodegen_Mask_0) },
+    { MP_ROM_QSTR(MP_QSTR_MASK_1), MP_ROM_INT(qrcodegen_Mask_1) },
+    { MP_ROM_QSTR(MP_QSTR_MASK_2), MP_ROM_INT(qrcodegen_Mask_2) },
+    { MP_ROM_QSTR(MP_QSTR_MASK_3), MP_ROM_INT(qrcodegen_Mask_3) },
+    { MP_ROM_QSTR(MP_QSTR_MASK_4), MP_ROM_INT(qrcodegen_Mask_4) },
+    { MP_ROM_QSTR(MP_QSTR_MASK_5), MP_ROM_INT(qrcodegen_Mask_5) },
+    { MP_ROM_QSTR(MP_QSTR_MASK_6), MP_ROM_INT(qrcodegen_Mask_6) },
+    { MP_ROM_QSTR(MP_QSTR_MASK_7), MP_ROM_INT(qrcodegen_Mask_7) },
+
+    { MP_ROM_QSTR(MP_QSTR_MODE_NUMERIC), MP_ROM_INT(qrcodegen_Mode_NUMERIC) },
+    { MP_ROM_QSTR(MP_QSTR_MODE_ALPHANUMERIC), MP_ROM_INT(qrcodegen_Mode_ALPHANUMERIC) },
+    { MP_ROM_QSTR(MP_QSTR_MODE_BYTE), MP_ROM_INT(qrcodegen_Mode_BYTE) },
+    { MP_ROM_QSTR(MP_QSTR_MODE_KANJI), MP_ROM_INT(qrcodegen_Mode_KANJI) },
+    { MP_ROM_QSTR(MP_QSTR_MODE_ECI), MP_ROM_INT(qrcodegen_Mode_ECI) },
 };
 
 STATIC MP_DEFINE_CONST_DICT(mp_module_qrcode_globals, qrcode_globals_table);
