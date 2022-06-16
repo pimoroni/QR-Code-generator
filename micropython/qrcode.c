@@ -137,4 +137,8 @@ const mp_obj_module_t qrcode_user_cmodule = {
 	.globals = (mp_obj_dict_t*)&mp_module_qrcode_globals,
 };
 
+#if MICROPY_VERSION <= 70144
 MP_REGISTER_MODULE(MP_QSTR_qrcode, qrcode_user_cmodule, MODULE_QRCODE_ENABLED);
+#else
+MP_REGISTER_MODULE(MP_QSTR_qrcode, qrcode_user_cmodule);
+#endif
