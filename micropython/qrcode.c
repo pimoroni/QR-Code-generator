@@ -96,6 +96,16 @@ STATIC const mp_rom_map_elem_t qrcode_locals_dict_table[] = {
 
 STATIC MP_DEFINE_CONST_DICT(qrcode_locals_dict, qrcode_locals_dict_table);
 
+#ifdef MP_DEFINE_CONST_OBJ_TYPE
+MP_DEFINE_CONST_OBJ_TYPE(
+    qrcode_type,
+    MP_QSTR_qrcode,
+    MP_TYPE_FLAG_NONE,
+    make_new, qrcode_make_new,
+    buffer, qrcode_get_buffer,
+    locals_dict, (mp_obj_dict_t*)&qrcode_locals_dict
+);
+#else
 const mp_obj_type_t qrcode_type = {
     { &mp_type_type },
     .name = MP_QSTR_qrcode,
@@ -103,6 +113,7 @@ const mp_obj_type_t qrcode_type = {
     .buffer_p = { .get_buffer = qrcode_get_buffer },
     .locals_dict = (mp_obj_dict_t*)&qrcode_locals_dict,
 };
+#endif
 
 STATIC const mp_map_elem_t qrcode_globals_table[] = {
 	{ MP_OBJ_NEW_QSTR(MP_QSTR___name__), MP_OBJ_NEW_QSTR(MP_QSTR_qrcode) },
