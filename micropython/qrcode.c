@@ -16,7 +16,7 @@ mp_obj_t qrcode___del__(mp_obj_t self_in) {
 }
 
 mp_obj_t qrcode_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args) {
-    qrcode_obj_t *self = m_new_obj_with_finaliser(qrcode_obj_t);
+    qrcode_obj_t *self = mp_obj_malloc_with_finaliser(qrcode_obj_t, &qrcode_type);
 
     enum { ARG_ecc, ARG_mask };
     static const mp_arg_t allowed_args[] = {
@@ -26,7 +26,6 @@ mp_obj_t qrcode_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, 
     mp_arg_val_t args[MP_ARRAY_SIZE(allowed_args)];
     mp_arg_parse_all_kw_array(n_args, n_kw, all_args, MP_ARRAY_SIZE(allowed_args), allowed_args, args);
 
-    self->base.type = &qrcode_type;
     self->qr0 = m_new(uint8_t, qrcodegen_BUFFER_LEN_MAX);
     self->tempBuffer = m_new(uint8_t, qrcodegen_BUFFER_LEN_MAX);
     self->ecc = args[ARG_ecc].u_int;
