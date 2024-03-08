@@ -70,7 +70,7 @@ mp_obj_t qrcode_get_size(mp_obj_t self_in) {
     return mp_obj_new_tuple(2, tuple);
 }
 
-STATIC mp_int_t qrcode_get_buffer(mp_obj_t self_in, mp_buffer_info_t *bufinfo, mp_uint_t flags) {
+static mp_int_t qrcode_get_buffer(mp_obj_t self_in, mp_buffer_info_t *bufinfo, mp_uint_t flags) {
     (void)flags;
     qrcode_obj_t *self = MP_OBJ_TO_PTR(self_in);
     bufinfo->buf = self->qr0;
@@ -86,14 +86,14 @@ MP_DEFINE_CONST_FUN_OBJ_1(qrcode_get_size_obj, qrcode_get_size);
 MP_DEFINE_CONST_FUN_OBJ_3(qrcode_get_module_obj, qrcode_get_module);
 
 
-STATIC const mp_rom_map_elem_t qrcode_locals_dict_table[] = {
+static const mp_rom_map_elem_t qrcode_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR___del__), MP_ROM_PTR(&qrcode___del___obj) },
     { MP_ROM_QSTR(MP_QSTR_set_text), MP_ROM_PTR(&qrcode_set_text_obj) },
     { MP_ROM_QSTR(MP_QSTR_get_size), MP_ROM_PTR(&qrcode_get_size_obj) },
     { MP_ROM_QSTR(MP_QSTR_get_module), MP_ROM_PTR(&qrcode_get_module_obj) },
 };
 
-STATIC MP_DEFINE_CONST_DICT(qrcode_locals_dict, qrcode_locals_dict_table);
+static MP_DEFINE_CONST_DICT(qrcode_locals_dict, qrcode_locals_dict_table);
 
 #ifdef MP_DEFINE_CONST_OBJ_TYPE
 MP_DEFINE_CONST_OBJ_TYPE(
@@ -114,7 +114,7 @@ const mp_obj_type_t qrcode_type = {
 };
 #endif
 
-STATIC const mp_map_elem_t qrcode_globals_table[] = {
+static const mp_map_elem_t qrcode_globals_table[] = {
     { MP_OBJ_NEW_QSTR(MP_QSTR___name__), MP_OBJ_NEW_QSTR(MP_QSTR_qrcode) },
     { MP_OBJ_NEW_QSTR(MP_QSTR_QRCode), (mp_obj_t)&qrcode_type },
 
@@ -140,7 +140,7 @@ STATIC const mp_map_elem_t qrcode_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR_MODE_ECI), MP_ROM_INT(qrcodegen_Mode_ECI) },
 };
 
-STATIC MP_DEFINE_CONST_DICT(mp_module_qrcode_globals, qrcode_globals_table);
+static MP_DEFINE_CONST_DICT(mp_module_qrcode_globals, qrcode_globals_table);
 
 const mp_obj_module_t qrcode_user_cmodule = {
     .base = { &mp_type_module },
